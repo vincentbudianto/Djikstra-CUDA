@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
      5000 |  360
   	*/
 
-    if (argc < 2)
+    if (argc < 4)
     {
         fprintf(stderr, "error: missing command line arguments\n");
         exit(1);
@@ -104,6 +104,14 @@ int main(int argc, char *argv[])
         clock_t begin = clock();
         // Inititate graph
         long nodes = atoi(argv[1]);
+        long threads = atoi(argv[2]);
+        if (threads < 2) {
+            threads = 1;
+        }
+        long blocks = atoi(argv[3]);
+        if (blocks < 2) {
+            blocks = 1;
+        }
         long num_bytes = nodes*nodes*sizeof(long);
         long *d_matrix, *h_matrix = 0;
 
@@ -147,9 +155,7 @@ int main(int argc, char *argv[])
 
         cudaMemset(d_newMatrix,0,num_bytes);
 
-        int blockSize = 256;
-        int numBlocks = (nodes + blockSize - 1) / blockSize;
-        solution<<<numBlocks, blockSize>>>(d_matrix, d_newMatrix, nodes);
+        solution<<<blocks, threads>>>(d_matrix, d_newMatrix, nodes);
 
         cudaMemcpy( h_newMatrix, d_newMatrix, num_bytes, cudaMemcpyDeviceToHost );
 
