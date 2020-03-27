@@ -37,16 +37,16 @@ Cara kerja program:
 
 ### Analisis Solusi
 * Kelebihan:
-  * Setiap *thread* membaca dari satu memory yang sama
-  * Jika *thread* yang digunakan hanya 1 program akan langsung menjalankan algoritma dijkstra secara serial
+  * Setiap *thread* dalam suatu *block* dapat melakukan sinkronisasi dan *memory sharing*
+  * Jika *thread* dan *block* yang digunakan hanya 1 program akan langsung menjalankan algoritma dijkstra secara serial
   * Lebih hemat *memory space* karena alokasi *memory* menyesuaikan input jumlah nodes
 * Kelemahan:
-  * Karena menggunakan satu server, perbedaan waktu yang dibutuhkan antara 1 *thread*, 2 *thread*, 3 *thread*, dst. tidak berbeda jauh
+  * Suatu *block* tidak dapat melakukan interaksi dengan *block* lain
 * Solusi yang lebih baik:
-  * Dapat menggunakan beberapa server tetapi disaat yang bersamaan masih dapat mengakses *memory* yang sama
+  * *block* dapat melakukan interaksi seperti melakukan sinkronisasi dan *memory sharing* yang dapat dilakukan oleh *thread* dalam suatu *block*
 
 ### Jumlah Thread dan Block yang Digunakan
-Pada percobaan kami menggunakan 256 *thread* dan membandingkan waktu yang dibutuhkan untuk setiap jumlah *block* yang dipakai. Pada akhirnya kami memutuskan penggunaan 6 *block* karena dari hasil percobaan kami, waktu yang dibutuhkan untuk mendapatkan solusi dengan menggunakan 6 *block* sedikit lebih cepat dibandingkan jika menggunakan 5 *block*, 4 *block*, 3 *block*, 2 *block* dan 1 *block* dan jauh lebih cepat dibandingkan jika menggunakan serial. Hal ini disebabkan oleh jumlah data yang dibagi untuk setiap *thread* menurun sesuai dengan banyaknya *block* yang digunakan sehingga *thread* dapat menyelesaikan tugasnya lebih cepat.
+Pada percobaan kami menggunakan 256 *thread* dan membandingkan waktu yang dibutuhkan untuk setiap jumlah *block* yang dipakai. Pada akhirnya kami memutuskan penggunaan 1 *block* karena dari hasil percobaan kami, waktu yang dibutuhkan untuk mendapatkan solusi dengan menggunakan 1 *block* sedikit lebih cepat dibandingkan jika menggunakan 2 *block*, 3 *block*, 4 *block*, 5 *block* dan 6 *block* dan jauh lebih cepat dibandingkan jika menggunakan serial. Hal ini disebabkan oleh kemampuan *thread* untuk *sharing memory* dengan *thread* lain pada satu *block* yang sama dan jumlah data yang dibagi untuk setiap *thread* menurun sesuai dengan banyaknya *thread* yang digunakan.
 <div align="center">
     <img src="./assets/data_parallelism.png" width="300" height="200"/>
 </div>
@@ -87,7 +87,7 @@ Pada percobaan kami menggunakan 256 *thread* dan membandingkan waktu yang dibutu
 | 256 (Paralel) |   6 (Paralel) |        3000 |     393069.000 |     358095.000 |     363772.000 |
 
 ### Analisis Perbandingan Kinerja Serial dan Paralel
-Algoritma dijkstra yang dijalankan secara serial memakan waktu jauh lebih lama dibandingkan dengan algoritma dijkstra yang dijalankan secara paralel karena jumlah server yang digunakan sama antara serial dengan paralel.
+Algoritma dijkstra yang dijalankan secara serial memakan waktu jauh lebih lama dibandingkan dengan algoritma dijkstra yang dijalankan secara paralel. Perbandingan waktu yang dibutuhkan antara serial dengan paralel untuk menyelesaikan algoritma dijkstra juga jauh lebih besar dibandingkan perbandingan waktu yang dibutuhkan antara serial dengan paralel ketika menggunakan OpenMP dan OpenMPI.
 
 ## Pembagian Tugas
 * 13517020 mengerjakan convert fungsi algoritma dijkstra openMP to Cuda
